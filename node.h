@@ -34,7 +34,7 @@ inline double logsumexp(double x, double y, bool flg) {
 
 struct Path;
 
-struct Node {
+struct Node { // unigram feature
   unsigned int         x;
   unsigned short int   y;
   double               alpha;

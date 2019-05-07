@@ -85,16 +85,16 @@ class FeatureIndex {
                  const char *pattern,
                  size_t pos, const TaggerImpl &tagger) const;
 
-  mutable unsigned int      maxid_;
-  const double             *alpha_;
+  mutable unsigned int      maxid_; // maximum feature id;
+  const double             *alpha_; // feature weight vector $w$
   const float              *alpha_float_;
   double                    cost_factor_;
   unsigned int              xsize_;
   bool check_max_xsize_;
   mutable unsigned int      max_xsize_;
-  std::vector<std::string>  unigram_templs_;
-  std::vector<std::string>  bigram_templs_;
-  std::vector<std::string>  y_;
+  std::vector<std::string>  unigram_templs_; // unigram templates
+  std::vector<std::string>  bigram_templs_; // bigram templates
+  std::vector<std::string>  y_; // labels
   std::string               templs_;
   whatlog                   what_;
 };

@@ -201,7 +201,7 @@ class TaggerImpl : public Tagger {
   unsigned int    mode_ ;
   unsigned int    vlevel_;
   unsigned int    nbest_;
-  size_t          ysize_;
+  size_t          ysize_;  // label size
   double          cost_;
   double          Z_;
   size_t          feature_id_;

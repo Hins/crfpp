@@ -33,6 +33,7 @@ template<class T> class scoped_ptr {
   T * get() const         { return ptr_;  }
 };
 
+// fixed length array
 template<class T, int N> class scoped_fixed_array {
  private:
   T * ptr_;
@@ -53,6 +54,7 @@ template<class T, int N> class scoped_fixed_array {
   T & operator[](size_t i) const   { return ptr_[i]; }
 };
 
+// unfixed length array
 template<class T> class scoped_array {
  private:
   T * ptr_;

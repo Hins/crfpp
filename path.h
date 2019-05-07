@@ -14,7 +14,7 @@
 namespace CRFPP {
 struct Node;
 
-struct Path {
+struct Path { // bigram features
   Node      *rnode;
   Node      *lnode;
   const int *fvector;
