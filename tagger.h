@@ -208,11 +208,11 @@ class TaggerImpl : public Tagger {
   unsigned short  thread_id_;
   FeatureIndex   *feature_index_;
   Allocator      *allocator_;
-  std::vector<std::vector <const char *> > x_;
+  std::vector<std::vector <const char *> > x_; // extract train.data into x_, std::vector <const char *> meant one line
   std::vector<std::vector <Node *> > node_;
   std::vector<std::vector<double> > penalty_;
-  std::vector<unsigned short int>  answer_;
-  std::vector<unsigned short int>  result_;
+  std::vector<unsigned short int>  answer_; // extract train.data into answer_, set 0/1/... by tag string
+  std::vector<unsigned short int>  result_; // extract train.data into result_, meant prediction tag
   whatlog       what_;
   string_buffer os_;
 
