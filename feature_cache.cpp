@@ -7,6 +7,7 @@
 //
 #include <algorithm>
 #include "feature_cache.h"
+#include <iostream>
 
 namespace CRFPP {
 
@@ -29,6 +30,7 @@ void FeatureCache::shrink(std::map<int, int> *old2new) {
     newf.push_back(-1);
     std::copy(newf.begin(), newf.end(), (*this)[i]);
   }
+  // std::cout<<"FeatureCache::shrink() size() is "<<size()<<std::endl;
   return;
 }
 }

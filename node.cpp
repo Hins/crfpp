@@ -33,9 +33,12 @@ void Node::calcBeta() {
 }
 
 void Node::calcExpectation(double *expected, double Z, size_t size) const {
-  const double c = std::exp(alpha + beta - cost - Z);
+  const double c = std::exp(alpha + beta - cost - Z);  // $\frac {\alpha M \beta} {Z}$, meant probability calculation
   for (const int *f = fvector; *f != -1; ++f) {
     expected[*f + y] += c;
+    // if (y == 0)
+    //  std::cout<<"target"<<std::endl;
+    // std::cout<<"status feature id is "<<(*f + y)<<std::endl;
   }
   for (const_Path_iterator it = lpath.begin(); it != lpath.end(); ++it) {
     (*it)->calcExpectation(expected, Z, size);

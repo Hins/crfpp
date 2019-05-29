@@ -42,6 +42,7 @@ void make_templs(const std::vector<std::string> unigram_templs,
 }  // namespace
 
 char *Allocator::strdup(const char *p) {
+  // std::cout<<p<<std::endl;
   const size_t len = std::strlen(p);
   char *q = char_freelist_->alloc(len + 1);
   std::strcpy(q, p);
@@ -108,6 +109,7 @@ int DecoderFeatureIndex::getID(const char *key) const {
 }
 
 int EncoderFeatureIndex::getID(const char *key) const {
+  // std::cout<<"key is "<<key<<std::endl;
   std::map <std::string, std::pair<int, unsigned int> >::iterator
       it = dic_.find(key);
   if (it == dic_.end()) {
@@ -141,6 +143,7 @@ bool EncoderFeatureIndex::openTemplate(const char *filename) {
     }
     if (line[0] == 'U') {
       unigram_templs_.push_back(line);
+      // std::cout<<line<<std::endl;
     } else if (line[0] == 'B') {
       bigram_templs_.push_back(line);
     } else {
@@ -243,6 +246,7 @@ bool DecoderFeatureIndex::openFromArray(const char *ptr, size_t size) {
   da_.set_array(const_cast<char *>(ptr));
   ptr += dsize;
 
+  // std::cout<<"set alpha_float_"<<std::endl;
   alpha_float_ = reinterpret_cast<const float *>(ptr);
   ptr += sizeof(alpha_float_[0]) * maxid_;
 
@@ -258,7 +262,7 @@ void EncoderFeatureIndex::shrink(size_t freq, Allocator *allocator) {
 
   std::map<int, int> old2new;
   int new_maxid = 0;
-
+  // std::cout<<"Before dic_.size() is "<<dic_.size()<<std::endl;
   for (std::map<std::string, std::pair<int, unsigned int> >::iterator
            it = dic_.begin(); it != dic_.end();) {
     const std::string &key = it->first;
@@ -274,7 +278,7 @@ void EncoderFeatureIndex::shrink(size_t freq, Allocator *allocator) {
   }
 
   allocator->feature_cache()->shrink(&old2new);
-
+  // std::cout<<"After dic_.size() is "<<dic_.size()<<std::endl;
   maxid_ = new_maxid;
 }
 
@@ -337,6 +341,7 @@ bool EncoderFeatureIndex::convert(const char *text_filename,
     }
     if (line[0] == 'U') {
       unigram_templs_.push_back(line.get());
+      // std::cout<<line.get()<<std::endl;
     } else if (line[0] == 'B') {
       bigram_templs_.push_back(line.get());
     } else {

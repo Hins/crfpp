@@ -51,9 +51,9 @@ class FeatureIndex {
  public:
   static const unsigned int version = MODEL_VERSION;
 
-  size_t size() const  { return maxid_; }
-  size_t xsize() const { return xsize_; }
-  size_t ysize() const { return y_.size(); }
+  size_t size() const  { return maxid_; }  // incremental size();
+  size_t xsize() const { return xsize_; }  // training data's column size;
+  size_t ysize() const { return y_.size(); } // training data's label size;
   const char* y(size_t i) const { return y_[i].c_str(); }
   void   set_alpha(const double *alpha) { alpha_ = alpha; }
   const float *alpha_float() { return alpha_float_; }

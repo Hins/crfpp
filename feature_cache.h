@@ -28,7 +28,7 @@ class FeatureCache: public std::vector <int *> {
   virtual ~FeatureCache() {}
 
  private:
-  FreeList<int> feature_freelist_;
+  FreeList<int> feature_freelist_; // int matrix
 };
 }
 #endif

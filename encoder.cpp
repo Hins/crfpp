@@ -82,11 +82,11 @@ class CRFEncoderThread: public thread {
     err = zeroone = 0;
     std::fill(expected.begin(), expected.end(), 0.0);
     for (size_t i = start_i; i < size; i += thread_num) {
-      obj += x[i]->gradient(&expected[0]);
-      int error_num = x[i]->eval();
-      err += error_num;
-      if (error_num) {
-        ++zeroone;
+      obj += x[i]->gradient(&expected[0]); //
+        int error_num = x[i]->eval();
+        err += error_num;
+        if (error_num) {
+          ++zeroone;
       }
     }
   }
@@ -361,7 +361,7 @@ bool Encoder::learn(const char *templfile,
         delete _x;
         continue;
       }
-
+      // std::cout<<"_x->xsize() is "<<_x->xsize()<<std::endl;
       _x->set_thread_id(line % thread_num);
 
       if (++line % 100 == 0) {
@@ -374,6 +374,18 @@ bool Encoder::learn(const char *templfile,
   }
 
   feature_index.shrink(freq, &allocator);
+  // std::cout<<"maxid_ is "<<feature_index.size()<<std::endl;
+  /*
+  std::cout<<"Final()"<<std::endl;
+  for (std::vector<int*>::const_iterator itr = allocator.feature_cache()->begin(); itr != allocator.feature_cache()->end(); itr++) {
+    int idx = 0;
+    while (*(*itr + idx) != -1) {
+      std::cout <<*(*itr + idx)<< " ";
+      idx++;
+    }
+    std::cout<<std::endl;
+  }
+  */
 
   std::vector <double> alpha(feature_index.size());           // parameter
   std::fill(alpha.begin(), alpha.end(), 0.0);

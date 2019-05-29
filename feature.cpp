@@ -92,6 +92,7 @@ bool FeatureIndex::applyRule(string_buffer *os,
                              const char *p,
                              size_t pos,
                              const TaggerImpl& tagger) const {
+  // std::cout<<"step into tagger"<<std::endl;
   os->assign("");  // clear
   const char *r;
 
@@ -109,6 +110,7 @@ bool FeatureIndex::applyRule(string_buffer *os,
               return false;
             }
             *os << r;
+            // std::cout<<"sub os is "<<*os<<std::endl;
             break;
           default:
             return false;
@@ -118,20 +120,21 @@ bool FeatureIndex::applyRule(string_buffer *os,
   }
 
   *os << '\0';
-
+  // std::cout<<"end into tagger"<<std::endl;
+  // std::cout<<"final os is "<<*os<<std::endl;
   return true;
 }
 
 void FeatureIndex::rebuildFeatures(TaggerImpl *tagger) const {
-  size_t fid = tagger->feature_id();
+  size_t fid = tagger->feature_id(); // incremental feature size, one instance meant one training sample handled by all unigram or bigram templates;
   const size_t thread_id = tagger->thread_id();
 
   Allocator *allocator = tagger->allocator();
-  allocator->clear_freelist(thread_id);
+  allocator->clear_freelist(thread_id); // clear path_freelist_ and node_freelist_;
   FeatureCache *feature_cache = allocator->feature_cache();
 
-  for (size_t cur = 0; cur < tagger->size(); ++cur) {
-    const int *f = (*feature_cache)[fid++];
+  for (size_t cur = 0; cur < tagger->size(); ++cur) { //construct TaggerImpl::node_
+    const int *f = (*feature_cache)[fid++]; // feature ids
     for (size_t i = 0; i < y_.size(); ++i) {
       Node *n = allocator->newNode(thread_id);
       n->clear();
@@ -163,22 +166,27 @@ bool FeatureIndex::buildFeatures(TaggerImpl *tagger) const {
   string_buffer os;
   std::vector<int> feature;
 
-  FeatureCache *feature_cache = tagger->allocator()->feature_cache();
+  FeatureCache *feature_cache = tagger->allocator()->feature_cache();  // incremental feature_cache
+  // std::cout<<"start feature_cache size is "<<feature_cache->size()<<std::endl;
   tagger->set_feature_id(feature_cache->size());
 
-  for (size_t cur = 0; cur < tagger->size(); ++cur) {
+  // std::cout<<"x_.size() is "<<tagger->size()<<std::endl;
+  for (size_t cur = 0; cur < tagger->size(); ++cur) { // tagger->size() is x_.size(), meant sample size;
     for (std::vector<std::string>::const_iterator it
              = unigram_templs_.begin();
          it != unigram_templs_.end(); ++it) {
       if (!applyRule(&os, it->c_str(), cur, *tagger)) {
         return false;
       }
+      // std::cout<<"os is "<<os<<std::endl;
+      // std::cout<<"unigram ADD key is "<<os<<std::endl;
       ADD;
     }
     feature_cache->add(feature);
     feature.clear();
   }
 
+  // std::cout<<"tagger size is "<<tagger->size()<<std::endl;
   for (size_t cur = 1; cur < tagger->size(); ++cur) {
     for (std::vector<std::string>::const_iterator
              it = bigram_templs_.begin();
@@ -186,11 +194,25 @@ bool FeatureIndex::buildFeatures(TaggerImpl *tagger) const {
       if (!applyRule(&os, it->c_str(), cur, *tagger)) {
         return false;
       }
-      ADD;
+      // std::cout<<"os is "<<os<<std::endl;
+      ADD;  // use os as input, update EncoderFeatureIndex::dic_ and EncoderFeatureIndex::maxid_
     }
-    feature_cache->add(feature);
+    feature_cache->add(feature);  // every line in training set own a vector<int>, saved in tagger::allocator::feature_cache
     feature.clear();
   }
+  // std::cout<<"feature_cache size is "<<feature_cache->size()<<std::endl;
+
+  /*
+  std::cout<<"In buildFeatures()"<<std::endl;
+  for (std::vector<int*>::const_iterator itr = feature_cache->begin(); itr != feature_cache->end(); itr++) {
+    int idx = 0;
+    while (*(*itr + idx) != -1) {
+      std::cout <<*(*itr + idx)<< " ";
+      idx++;
+    }
+    std::cout<<std::endl;
+  }
+  */
 
   return true;
 }

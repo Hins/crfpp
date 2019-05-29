@@ -15,6 +15,9 @@ void Path::calcExpectation(double *expected, double Z, size_t size) const {
   const double c = std::exp(lnode->alpha + cost + rnode->beta - Z);
   for (const int *f = fvector; *f != -1; ++f) {
     expected[*f + lnode->y * size + rnode->y] += c;
+    // if (lnode->y * size + rnode->y == 0)
+    //  std::cout<<"target"<<std::endl;
+    // std::cout<<"transition feature id is "<<(*f + lnode->y * size + rnode->y)<<std::endl;
   }
 }
 

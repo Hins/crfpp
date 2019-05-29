@@ -326,12 +326,14 @@ bool TaggerImpl::add2(size_t size, const char **column, bool copy) {
   result_[s] = answer_[s] = 0;  // dummy
   if (mode_ == LEARN) {
     size_t r = ysize_;
+    // std::cout<<"initial r is "<<r<<std::endl;
     for (size_t k = 0; k < ysize_; ++k) {
+      // std::cout<<"yname(k) is "<<yname(k)<<"; column[xsize] is "<<column[xsize]<<std::endl;
       if (std::strcmp(yname(k), column[xsize]) == 0) {
         r = k;
       }
     }
-
+    // std::cout<<"final r is "<<r<<std::endl;
     CHECK_FALSE(r != ysize_) << "cannot find answer: " << column[xsize];
     answer_[s] = r;
   }
@@ -347,6 +349,7 @@ bool TaggerImpl::add(size_t size, const char **column) {
 
 bool TaggerImpl::add(const char* line) {
   char *p = allocator_->strdup(line);
+  // std::cout<<p<<std::endl;
   scoped_fixed_array<const char *, 8192> column;
   const size_t size = tokenize2(p, "\t ", column.get(), column.size());
   if (!add2(size, column.get(), false)) {
@@ -364,6 +367,7 @@ bool TaggerImpl::read(std::istream *is) {
       is->clear(std::ios::eofbit|std::ios::badbit);
       return true;
     }
+    // std::cout<<line.get()<<std::endl;
     if (line[0] == '\0' || line[0] == ' ' || line[0] == '\t') {
       break;
     }
@@ -396,6 +400,7 @@ bool TaggerImpl::shrink() {
   std::vector<std::vector<Node *> >(node_).swap(node_);
   std::vector<unsigned short int>(answer_).swap(answer_);
   std::vector<unsigned short int>(result_).swap(result_);
+  // std::cout<<"tagger feature_index size is "<<feature_index_->size()<<"; xsize is "<<feature_index_->xsize()<<";  ysize is "<<feature_index_->ysize()<<std::endl;
 
   return true;
 }
@@ -482,6 +487,9 @@ void TaggerImpl::buildLattice() {
   }
 
   feature_index_->rebuildFeatures(this);
+
+  /* for (size_t i = 0; i < feature_index_->size(); i++)
+    std::cout<<"alpha "<<i<<" is "<<feature_index_->alpha()[i]<<std::endl; */
 
   for (size_t i = 0; i < x_.size(); ++i) {
     for (size_t j = 0; j < ysize_; ++j) {

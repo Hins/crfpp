@@ -35,14 +35,14 @@ inline double logsumexp(double x, double y, bool flg) {
 struct Path;
 
 struct Node { // unigram feature
-  unsigned int         x;
-  unsigned short int   y;
+  unsigned int         x; // sample index in current TaggerImpl's sentence
+  unsigned short int   y; // label value
   double               alpha;
   double               beta;
   double               cost;
   double               bestCost;
   Node                *prev;
-  const int           *fvector;
+  const int           *fvector; // feature ids
   std::vector<Path *>  lpath;
   std::vector<Path *>  rpath;
 
